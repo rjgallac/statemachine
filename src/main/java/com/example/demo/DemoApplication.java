@@ -39,16 +39,17 @@ public class DemoApplication implements ApplicationRunner {
 		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.REVIEWED).build())).subscribe();
 		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.APPROVE).build())).subscribe();
 		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.CLOSE).build())).subscribe();
-//		stateMachine.stopReactively();
+		stateMachine.stopReactively();
 
 		System.out.println("------------------------");
 		UUID uuid1 = UUID.randomUUID();
 		System.out.println(uuid1);
 		stateMachine = stateMachineFactory.getStateMachine(uuid1);
+		stateMachine.stopReactively();
 		stateMachine.getStateMachineAccessor().doWithAllRegions(sma ->
-			sma.resetStateMachineReactively(new DefaultStateMachineContext<>(ApplicationReviewStates.PEER_REVIEW, null, null, null))
-		);
-		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.SUBMIT).build())).subscribe();
+			sma.resetStateMachineReactively(new DefaultStateMachineContext<>(ApplicationReviewStates.PEER_REVIEW, null, null, null)).subscribe());
+
+		stateMachine.startReactively();
 		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.REVIEWED).build())).subscribe();
 		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.APPROVE).build())).subscribe();
 		stateMachine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.CLOSE).build())).subscribe();

@@ -47,7 +47,6 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
         transitions
             .withExternal()
                 .source(ApplicationReviewStates.START).target(ApplicationReviewStates.PEER_REVIEW).event(ApplicationReviewEvents.SUBMIT)
-                .action(initAction())
                 .and()
             .withExternal()
                 .source(ApplicationReviewStates.PEER_REVIEW).target(ApplicationReviewStates.PRINCIPAL_REVIEW).event(ApplicationReviewEvents.REVIEWED)
