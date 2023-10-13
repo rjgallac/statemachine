@@ -28,7 +28,7 @@ public class ApplicationController {
     @PostMapping
     public void create() {
         Application application = Application.builder()
-                .applicationReviewStates(ApplicationReviewStates.PEER_REVIEW)
+                .applicationReviewStates(ApplicationReviewStates.START)
                 .date(new Date())
                 .build();
         applicationService.save(application);
