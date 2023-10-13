@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.support.DefaultStateMachineContext;
 
 @SpringBootApplication
 public class DemoApplication implements ApplicationRunner {
@@ -25,21 +26,21 @@ public class DemoApplication implements ApplicationRunner {
 	public void run(ApplicationArguments arg0) throws Exception {
 		System.out.println("Hello World from Application Runner");
 
-		stateMachine.start();
+		stateMachine.startReactively();
 		stateMachine.sendEvent(ApplicationReviewEvents.SUBMIT);
-
-
-		System.out.println(stateMachine.getState());
-
 		stateMachine.sendEvent(ApplicationReviewEvents.REVIEWED);
-
-
-		System.out.println(stateMachine.getState());
-
 		stateMachine.sendEvent(ApplicationReviewEvents.APPROVE);
+//		stateMachine.sendEvent(ApplicationReviewEvents.CLOSE);
+//		stateMachine.stopReactively();
 
-		System.out.println(stateMachine.getState());
-
+		System.out.println("------------------------");
+//		stateMachine.startReactively();
+		stateMachine.getStateMachineAccessor().doWithAllRegions(sma ->
+			sma.resetStateMachineReactively(new DefaultStateMachineContext<>(ApplicationReviewStates.PEER_REVIEW, null, null, null))
+		);
+		stateMachine.sendEvent(ApplicationReviewEvents.REVIEWED);
+		stateMachine.sendEvent(ApplicationReviewEvents.APPROVE);
+		stateMachine.sendEvent(ApplicationReviewEvents.CLOSE);
 
 	}
 

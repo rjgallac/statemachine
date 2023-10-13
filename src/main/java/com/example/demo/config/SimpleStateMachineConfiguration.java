@@ -21,12 +21,11 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
     private StateMachineListener stateMachineListener;
 
     @Override
-    public void configure(StateMachineConfigurationConfigurer<ApplicationReviewStates, ApplicationReviewEvents> config)
-            throws Exception {
+    public void configure(StateMachineConfigurationConfigurer<ApplicationReviewStates, ApplicationReviewEvents> config) throws Exception {
         config
-                .withConfiguration()
-                .autoStartup(true)
-                .listener(stateMachineListener);
+            .withConfiguration()
+            .autoStartup(true)
+            .listener(stateMachineListener);
     }
 
     @Override
@@ -48,7 +47,11 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
                 .withExternal()
                 .source(ApplicationReviewStates.PRINCIPAL_REVIEW).target(ApplicationReviewStates.APPROVED).event(ApplicationReviewEvents.APPROVE).and()
                 .withExternal()
-                .source(ApplicationReviewStates.PRINCIPAL_REVIEW).target(ApplicationReviewStates.REJECTED).event(ApplicationReviewEvents.REJECT).and();
+                .source(ApplicationReviewStates.PRINCIPAL_REVIEW).target(ApplicationReviewStates.REJECTED).event(ApplicationReviewEvents.REJECT).and()
+                .withExternal()
+                .source(ApplicationReviewStates.APPROVED).target(ApplicationReviewStates.END).event(ApplicationReviewEvents.CLOSE).and()
+                .withExternal()
+                .source(ApplicationReviewStates.REJECTED).target(ApplicationReviewStates.END).event(ApplicationReviewEvents.CLOSE);
     }
 
     @Bean
