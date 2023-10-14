@@ -85,7 +85,7 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
     public Action<ApplicationReviewStates, ApplicationReviewEvents> actionError() {
         return ctx ->{
             System.out.println(ctx.getTarget().getId());
-            int test = 1/0;
+//            int test = 1/0;
         };
 
     }

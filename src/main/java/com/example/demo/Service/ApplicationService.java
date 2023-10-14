@@ -40,4 +40,9 @@ public class ApplicationService {
         }
 
     }
+
+    public Application getById(long id) {
+        Optional<Application> application = applicationRepository.findById(id);
+        return application.get();
+    }
 }
