@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
+import static org.springframework.util.Assert.state;
+
 @Configuration
 @EnableStateMachineFactory
 public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapter<ApplicationReviewStates, ApplicationReviewEvents> {
@@ -38,7 +40,7 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
             .initial(ApplicationReviewStates.START)
             .end(ApplicationReviewStates.END)
             .states(new HashSet<ApplicationReviewStates>(Arrays.asList(ApplicationReviewStates.PEER_REVIEW, ApplicationReviewStates.PRINCIPAL_REVIEW, ApplicationReviewStates.APPROVED, ApplicationReviewStates.APPROVED)));
-//                .state(ApplicationReviewStates.PEER_REVIEW, initAction(), errorAction())
+//                .state(ApplicationReviewStates.PEER_REVIEW, initAction(), errorAction());
 //                .state(ApplicationReviewStates.PRINCIPAL_REVIEW, initAction(), errorAction());
     }
 
@@ -47,12 +49,15 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
         transitions
             .withExternal()
                 .source(ApplicationReviewStates.START).target(ApplicationReviewStates.PEER_REVIEW).event(ApplicationReviewEvents.SUBMIT)
+                .action(initAction(), errorAction())
                 .and()
             .withExternal()
                 .source(ApplicationReviewStates.PEER_REVIEW).target(ApplicationReviewStates.PRINCIPAL_REVIEW).event(ApplicationReviewEvents.REVIEWED)
+                .action(actionError(), errorAction())
                 .and()
             .withExternal()
                 .source(ApplicationReviewStates.PRINCIPAL_REVIEW).target(ApplicationReviewStates.APPROVED).event(ApplicationReviewEvents.APPROVE)
+                .action(initAction(), errorAction())
                 .and()
             .withExternal()
                 .source(ApplicationReviewStates.PRINCIPAL_REVIEW).target(ApplicationReviewStates.REJECTED).event(ApplicationReviewEvents.REJECT)
@@ -76,6 +81,14 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
                 "Error " + ctx.getSource().getId() + ctx.getException());
     }
 
+    @Bean
+    public Action<ApplicationReviewStates, ApplicationReviewEvents> actionError() {
+        return ctx ->{
+            System.out.println(ctx.getTarget().getId());
+            int test = 1/0;
+        };
+
+    }
 
 
 }
