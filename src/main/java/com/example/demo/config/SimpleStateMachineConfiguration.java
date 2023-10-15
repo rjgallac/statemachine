@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import static org.springframework.util.Assert.state;
 
 @Configuration
-@EnableStateMachineFactory
+@EnableStateMachineFactory(name = "one")
 public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapter<ApplicationReviewStates, ApplicationReviewEvents> {
 
     @Autowired

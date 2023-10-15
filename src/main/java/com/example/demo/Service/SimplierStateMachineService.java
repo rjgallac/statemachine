@@ -2,7 +2,6 @@ package com.example.demo.Service;
 
 import com.example.demo.config.ApplicationReviewEvents;
 import com.example.demo.config.ApplicationReviewStates;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.statemachine.StateMachine;
@@ -12,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 //@RequiredArgsConstructor
-public class StateMachineService {
+public class SimplierStateMachineService {
 
-    @Qualifier("one")
+    @Qualifier("two")
     @Autowired
     private StateMachineFactory<ApplicationReviewStates, ApplicationReviewEvents> stateMachineFactory;
 

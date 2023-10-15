@@ -26,12 +26,20 @@ public class StateMachineServiceTest {
 
     @Test
     public void test(){
+        ApplicationReviewStates id;
+
         StateMachine<ApplicationReviewStates, ApplicationReviewEvents> machine = stateMachineService.getMachineDefault();
         machine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.SUBMIT).build())).subscribe();
+        id = machine.getState().getId();
+        assertEquals(ApplicationReviewStates.PEER_REVIEW, id);
         machine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.REVIEWED).build())).subscribe();
+        id = machine.getState().getId();
+        assertEquals(ApplicationReviewStates.PRINCIPAL_REVIEW, id);
         machine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.APPROVE).build())).subscribe();
+        id = machine.getState().getId();
+        assertEquals(ApplicationReviewStates.APPROVED, id);
         machine.sendEvent(Mono.just(MessageBuilder.withPayload(ApplicationReviewEvents.CLOSE).build())).subscribe();
-        ApplicationReviewStates id = machine.getState().getId();
+        id = machine.getState().getId();
         assertEquals(ApplicationReviewStates.END, id);
     }
 
