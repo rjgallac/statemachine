@@ -21,6 +21,12 @@ public class StateMachineService {
                 sma.resetStateMachineReactively(new DefaultStateMachineContext<>(applicationReviewStates, null, null, null)).subscribe());
 
         stateMachine.startReactively();
+        System.out.println(stateMachine.getState().getId());
         return stateMachine;
     }
+
+    public StateMachine<ApplicationReviewStates, ApplicationReviewEvents> getMachineDefault() {
+        return stateMachineFactory.getStateMachine();
+    }
+
 }

@@ -40,4 +40,9 @@ public class ApplicationController {
         applicationService.updateState(id, state);
     }
 
+    @GetMapping("/tester")
+    public void tester() {
+        applicationService.tester();
+    }
+
 }

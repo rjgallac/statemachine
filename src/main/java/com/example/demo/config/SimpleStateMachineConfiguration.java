@@ -37,16 +37,23 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
     public void configure(StateMachineStateConfigurer<ApplicationReviewStates, ApplicationReviewEvents> states) throws Exception {
         states
             .withStates()
-            .initial(ApplicationReviewStates.START)
-            .end(ApplicationReviewStates.END)
-            .states(new HashSet<ApplicationReviewStates>(Arrays.asList(ApplicationReviewStates.PEER_REVIEW, ApplicationReviewStates.PRINCIPAL_REVIEW, ApplicationReviewStates.APPROVED, ApplicationReviewStates.APPROVED)));
-//                .state(ApplicationReviewStates.PEER_REVIEW, initAction(), errorAction());
-//                .state(ApplicationReviewStates.PRINCIPAL_REVIEW, initAction(), errorAction());
+                .initial(ApplicationReviewStates.START)
+                .state(ApplicationReviewStates.PEER_REVIEW)
+                .fork(ApplicationReviewStates.PRINCIPAL_REVIEW_FORK)
+                .state(ApplicationReviewStates.PRINCIPAL_REVIEW)
+                .state(ApplicationReviewStates.APPROVED)
+                .end(ApplicationReviewStates.END);
+
     }
 
     @Override
     public void configure(StateMachineTransitionConfigurer<ApplicationReviewStates, ApplicationReviewEvents> transitions) throws Exception {
         transitions
+            .withFork()
+                .source(ApplicationReviewStates.PRINCIPAL_REVIEW_FORK)
+                .target(ApplicationReviewStates.APPROVED)
+                .target(ApplicationReviewStates.REJECTED_INITIAL)
+            .and()
             .withExternal()
                 .source(ApplicationReviewStates.START).target(ApplicationReviewStates.PEER_REVIEW).event(ApplicationReviewEvents.SUBMIT)
                 .action(initAction(), errorAction())
@@ -56,7 +63,7 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
                 .action(actionError(), errorAction())
                 .and()
             .withExternal()
-                .source(ApplicationReviewStates.PRINCIPAL_REVIEW).target(ApplicationReviewStates.APPROVED).event(ApplicationReviewEvents.APPROVE)
+                .source(ApplicationReviewStates.PRINCIPAL_REVIEW).event(ApplicationReviewEvents.APPROVE).target(ApplicationReviewStates.APPROVED)
                 .action(initAction(), errorAction())
                 .and()
             .withExternal()
@@ -66,7 +73,9 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
                 .source(ApplicationReviewStates.APPROVED).target(ApplicationReviewStates.END).event(ApplicationReviewEvents.CLOSE)
                 .and()
             .withExternal()
-                .source(ApplicationReviewStates.REJECTED).target(ApplicationReviewStates.END).event(ApplicationReviewEvents.CLOSE);
+                .source(ApplicationReviewStates.REJECTED).target(ApplicationReviewStates.END2).event(ApplicationReviewEvents.CLOSE)
+                .and();
+
     }
 
     @Bean
@@ -85,7 +94,7 @@ public class SimpleStateMachineConfiguration extends StateMachineConfigurerAdapt
     public Action<ApplicationReviewStates, ApplicationReviewEvents> actionError() {
         return ctx ->{
             System.out.println(ctx.getTarget().getId());
-            int test = 1/0;
+//            int test = 1/0;
         };
 
     }

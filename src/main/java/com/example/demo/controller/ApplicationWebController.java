@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.Service.ApplicationService;
 import com.example.demo.config.ApplicationReviewStates;
 import com.example.demo.model.Application;
+import com.example.demo.model.ApplicationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,8 +32,8 @@ public class ApplicationWebController {
 
     @GetMapping("/{id}")
     public String getById(@PathVariable long id, Model model) {
-        Application application = applicationService.getById(id);
-        model.addAttribute("app", application);
+        ApplicationDto applicationDto = applicationService.getById(id);
+        model.addAttribute("app", applicationDto);
         return "app";
     }
 
@@ -52,9 +53,9 @@ public class ApplicationWebController {
         return "redirect:/";
     }
 
-    @GetMapping("/{id}/{status}")
-    public String updateStatus(@PathVariable long id, @PathVariable String status) {
-        applicationService.updateState(id, status);
+    @GetMapping("/{id}/{event}")
+    public String updateStatus(@PathVariable long id, @PathVariable String event) {
+        applicationService.updateState(id, event);
         return "redirect:/";
     }
 
